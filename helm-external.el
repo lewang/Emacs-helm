@@ -39,13 +39,27 @@ e.g : '\(\(\"jpg\" . \"gqview\"\) (\"pdf\" . \"xpdf\"\)\) "
   :type '(alist :key-type string :value-type string)
   :group 'helm-external)
 
-(defcustom helm-c-default-external-file-browser "nautilus"
+(defcustom helm-c-external-use-mailcap
+  (if (memq system-type '(windows-nt cygwin darwin))
+      nil
+    t)
+  "Determine whether to use Mailcap to find external program.
+
+If nil, then `helm-c-default-external-file-browser' is used. "
+  :type 'boolean
+  :group 'helm-external)
+
+(defcustom helm-c-default-external-file-browser
+  (cond ((memq system-type '(windows-nt cygwin))
+         "start")
+        ((eq system-type 'darwin)
+         "open")
+        ("nautilus"))
   "Default external file browser for your system.
 Directories will be opened externally with it when
 opening file externally in `helm-find-files'.
 Set to nil if you do not have external file browser
-or do not want to use it.
-Windows users should set that to \"explorer.exe\"."
+or do not want to use it."
   :group 'helm-external
   :type  'string)
 
@@ -134,7 +148,8 @@ if nothing found return nil."
     (cond ((and def-prog (not (string= def-prog "")))
            (concat def-prog " %s"))
           ((and helm-c-default-external-file-browser
-                (file-directory-p filename))
+                (or (file-directory-p filename)
+                    (not helm-c-external-use-mailcap)))
            (concat helm-c-default-external-file-browser " %s"))
           (t (helm-get-mailcap-for-file filename)))))
 
