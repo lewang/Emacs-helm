@@ -544,4 +544,4 @@ based on system type.
 (provide 'helm-cmd-t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; helm-cmd-t.el ends here
+;;; helm-cmd-t.el ends here
